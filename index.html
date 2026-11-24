@@ -1,0 +1,4969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Adaptive Tongue Twister Challenge V2</title>
+
+<style>
+:root {
+    --bg: #0b1020;
+    --panel: #151d32;
+    --light: #222d45;
+    --purple: #a78bfa;
+    --blue: #60a5fa;
+    --green: #4ade80;
+    --pink: #f472b6;
+    --yellow: #facc15;
+    --red: #fb7185;
+    --text: #f8fafc;
+    --muted: #a5b4ca;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--text);
+    background:
+        radial-gradient(circle at top left, #302050, transparent 40%),
+        radial-gradient(circle at bottom right, #143550, transparent 40%),
+        var(--bg);
+    line-height: 1.6;
+}
+
+button, select, input {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.app {
+    max-width: 900px;
+    margin: auto;
+    padding: 24px 16px 50px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.logo {
+    font-size: 50px;
+}
+
+h1 {
+    font-size: clamp(28px, 5vw, 43px);
+    line-height: 1.2;
+    margin: 8px 0;
+}
+
+h2 {
+    font-size: 25px;
+    margin: 8px 0 12px;
+}
+
+h3 {
+    margin: 16px 0 10px;
+}
+
+p {
+    margin: 10px 0;
+}
+
+.muted {
+    color: var(--muted);
+}
+
+.small {
+    font-size: 13px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 22px 0 12px;
+}
+
+.stat {
+    text-align: center;
+    padding: 14px 5px;
+    background: var(--panel);
+    border: 1px solid #ffffff12;
+    border-radius: 16px;
+}
+
+.stat-label {
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--muted);
+}
+
+.stat-value {
+    font-size: 27px;
+    font-weight: bold;
+}
+
+#timer {
+    color: var(--yellow);
+}
+
+#xp {
+    color: var(--green);
+}
+
+.progress {
+    height: 9px;
+    background: var(--light);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, #8b5cf6, #38bdf8);
+    transition: width 0.4s;
+}
+
+.panel {
+    background: var(--panel);
+    border: 1px solid #ffffff15;
+    border-radius: 22px;
+    padding: clamp(18px, 4vw, 28px);
+    margin-bottom: 18px;
+    box-shadow: 0 12px 30px #00000020;
+}
+
+.eyebrow {
+    color: var(--purple);
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.btn {
+    border: none;
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: white;
+    background: var(--light);
+    font-weight: bold;
+}
+
+.primary {
+    background: linear-gradient(135deg, #8b5cf6, #6366f1);
+}
+
+.success {
+    background: #166534;
+}
+
+.warning {
+    background: #854d0e;
+}
+
+.secondary {
+    border: 1px solid #ffffff22;
+}
+
+.full {
+    width: 100%;
+    margin-top: 12px;
+}
+
+.button-row {
+    display: flex;
+    gap: 9px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+}
+
+.button-row .btn {
+    flex: 1;
+}
+
+.cluster-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 18px 0;
+}
+
+.cluster-card {
+    border: 2px solid transparent;
+    border-radius: 13px;
+    padding: 13px 6px;
+    background: var(--light);
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.cluster-card small {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: normal;
+}
+
+.cluster-card.selected {
+    border-color: var(--purple);
+    background: #352956;
+}
+
+.cluster-card.completed {
+    border-color: var(--green);
+}
+
+.tip {
+    margin: 15px 0;
+    background: #172740;
+    border-left: 4px solid var(--blue);
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 14px;
+}
+
+.tip strong {
+    color: var(--blue);
+}
+
+.stage-nav {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 5px;
+    margin-bottom: 20px;
+}
+
+.stage {
+    background: var(--light);
+    color: var(--muted);
+    text-align: center;
+    border-radius: 9px;
+    font-size: 11px;
+    padding: 11px 2px;
+}
+
+.stage.active {
+    background: #6745bb;
+    color: white;
+}
+
+.stage.done {
+    color: var(--green);
+}
+
+.target {
+    font-size: 46px;
+    font-weight: 900;
+    color: var(--purple);
+    text-align: center;
+}
+
+.ipa {
+    text-align: center;
+    font-size: 20px;
+    color: var(--muted);
+}
+
+.twister {
+    background: #0d1527;
+    border-radius: 17px;
+    padding: 25px 15px;
+    margin: 18px 0;
+    text-align: center;
+    font-size: clamp(23px, 4vw, 35px);
+    line-height: 1.7;
+    font-weight: 800;
+}
+
+.highlight {
+    color: var(--pink);
+}
+
+.word-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 9px;
+    margin: 17px 0;
+}
+
+.word-chip {
+    background: var(--light);
+    color: white;
+    border: 1px solid #ffffff20;
+    padding: 10px 15px;
+    border-radius: 10px;
+    font-size: 19px;
+}
+
+.speed-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 9px;
+    margin: 16px 0;
+}
+
+.speed {
+    color: white;
+    background: var(--light);
+    border: 2px solid transparent;
+    border-radius: 10px;
+    padding: 11px 3px;
+}
+
+.speed.selected {
+    color: var(--yellow);
+    border-color: var(--yellow);
+}
+
+.mic-area {
+    text-align: center;
+    padding: 18px 0;
+}
+
+.mic-button {
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    border: none;
+    color: white;
+    font-size: 35px;
+    background: linear-gradient(135deg, #ec4899, #8b5cf6);
+}
+
+.mic-button.recording {
+    background: #e11d48;
+    animation: pulse 1.2s infinite;
+}
+
+@keyframes pulse {
+    0%,100% {
+        box-shadow: 0 0 0 0 #fb718544;
+    }
+    50% {
+        box-shadow: 0 0 0 16px #fb718500;
+    }
+}
+
+.feedback {
+    background: #0d1527;
+    padding: 18px;
+    border-radius: 15px;
+    margin: 16px 0;
+}
+
+.score {
+    font-size: 46px;
+    font-weight: 900;
+    color: var(--green);
+    text-align: center;
+}
+
+.matched {
+    color: var(--green);
+}
+
+.unmatched {
+    color: var(--red);
+    text-decoration: underline;
+    text-decoration-style: dotted;
+}
+
+.adaptive-box {
+    background: #2d2346;
+    border: 1px solid #a78bfa44;
+    padding: 15px;
+    border-radius: 13px;
+    margin: 14px 0;
+}
+
+.pair-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.pair {
+    background: var(--light);
+    border-radius: 13px;
+    padding: 17px 8px;
+    text-align: center;
+}
+
+.pair strong {
+    display: block;
+    color: var(--purple);
+    font-size: 25px;
+}
+
+.rhythm-line {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 20px 4px;
+}
+
+.rhythm-unit {
+    text-align: center;
+    min-width: 48px;
+}
+
+.beat {
+    margin: 8px auto 12px;
+    border-radius: 50%;
+    width: 11px;
+    height: 11px;
+    background: var(--muted);
+}
+
+.beat.strong {
+    width: 23px;
+    height: 23px;
+    background: var(--purple);
+}
+
+.rhythm-unit.stressed {
+    font-weight: 900;
+    color: var(--purple);
+}
+
+.rhythm-unit.playing .beat {
+    box-shadow: 0 0 20px 6px #facc1588;
+    background: var(--yellow);
+}
+
+.audio-box {
+    background: var(--light);
+    border-radius: 15px;
+    padding: 16px;
+    margin-top: 15px;
+}
+
+audio {
+    width: 100%;
+    margin-top: 12px;
+}
+
+.checklist label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px;
+    background: var(--light);
+    border-radius: 9px;
+    margin: 8px 0;
+    cursor: pointer;
+}
+
+input[type="checkbox"] {
+    accent-color: #8b5cf6;
+    width: 19px;
+    height: 19px;
+    flex-shrink: 0;
+}
+
+.report-hero {
+    text-align: center;
+}
+
+.trophy {
+    font-size: 65px;
+}
+
+.report-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.report-stat {
+    background: var(--light);
+    padding: 15px;
+    border-radius: 14px;
+    text-align: center;
+}
+
+.report-stat strong {
+    display: block;
+    font-size: 29px;
+    color: var(--purple);
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 15px 0;
+    font-size: 14px;
+}
+
+th, td {
+    text-align: center;
+    padding: 12px 7px;
+    border-bottom: 1px solid #ffffff20;
+}
+
+th {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.positive {
+    color: var(--green);
+}
+
+.negative {
+    color: var(--red);
+}
+
+.scene {
+    background: linear-gradient(#234a6b, #476c8a);
+    text-align: center;
+    border-radius: 15px;
+    padding: 25px 10px;
+    font-size: 43px;
+    letter-spacing: 6px;
+}
+
+.keyword {
+    display: inline-block;
+    background: #352956;
+    color: #ddd6fe;
+    border-radius: 8px;
+    padding: 6px 12px;
+    margin: 4px;
+}
+
+.history-item {
+    background: var(--light);
+    padding: 12px;
+    border-radius: 10px;
+    margin: 8px 0;
+    font-size: 14px;
+}
+
+.note {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 15px;
+}
+
+select {
+    background: var(--light);
+    color: white;
+    border: 1px solid #ffffff22;
+    border-radius: 10px;
+    width: 100%;
+    padding: 12px;
+}
+
+@media(max-width: 500px) {
+    .app {
+        padding: 14px 10px 30px;
+    }
+
+    .stage {
+        font-size: 9px;
+    }
+
+    .btn {
+        font-size: 13px;
+    }
+
+    .stat-value {
+        font-size: 22px;
+    }
+
+    .rhythm-unit {
+        min-width: 38px;
+        font-size: 12px;
+    }
+
+    th, td {
+        padding: 9px 4px;
+        font-size: 11px;
+    }
+}
+
+@media(prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<main class="app">
+
+<header>
+    <div class="logo">🎙️</div>
+    <h1>Adaptive Tongue Twister</h1>
+    <p class="muted">
+        Speak clearly. Build rhythm. Sound natural.
+    </p>
+    <p class="eyebrow">RESEARCH-BASED PRONUNCIATION TRAINING · V2</p>
+</header>
+
+<div class="dashboard">
+    <div class="stat">
+        <div class="stat-label">TIME LEFT</div>
+        <div class="stat-value" id="timer">05:00</div>
+    </div>
+
+    <div class="stat">
+        <div class="stat-label">TOTAL XP</div>
+        <div class="stat-value" id="xp">0</div>
+    </div>
+
+    <div class="stat">
+        <div class="stat-label">STAGE</div>
+        <div class="stat-value" id="stageCount">0/6</div>
+    </div>
+</div>
+
+<div class="progress">
+    <div class="progress-fill" id="progressFill"></div>
+</div>
+
+<!-- START SCREEN -->
+
+<section class="panel" id="startScreen">
+
+    <div class="eyebrow">YOUR PRONUNCIATION MISSION</div>
+
+    <h2>Ready to train your tongue?</h2>
+
+    <p class="muted">
+        Practice English consonant clusters, sentence stress,
+        rhythm and natural speaking in a five-minute challenge.
+    </p>
+
+    <div class="cluster-grid" id="allClusters"></div>
+
+    <h3>Choose your training mode</h3>
+
+    <select id="trainingMode">
+        <option value="adaptive">
+            Adaptive — Recommended for you
+        </option>
+        <option value="s">
+            S-clusters: sm, sn, st
+        </option>
+        <option value="b">
+            B-clusters: bl, br
+        </option>
+        <option value="c">
+            C-clusters: cl, cr
+        </option>
+        <option value="f">
+            F-clusters: fl, fr
+        </option>
+        <option value="mixed">
+            Mixed Challenge
+        </option>
+        <option value="custom">
+            Choose my own clusters
+        </option>
+    </select>
+
+    <div id="customNotice" class="tip hidden">
+        Select up to three consonant clusters above.
+    </div>
+
+    <div class="tip">
+        <strong>Today's focus</strong>
+        <p id="recommendedFocus"></p>
+        자음 사이에 불필요한 모음을 넣지 않고
+        두 자음을 자연스럽게 연결하세요.
+    </div>
+
+    <div class="button-row">
+        <button class="btn secondary" id="testSpeaker">
+            🔊 Test Speaker
+        </button>
+
+        <button class="btn secondary" id="historyButton">
+            📊 Learning History
+        </button>
+    </div>
+
+    <button class="btn primary full" id="startButton">
+        Start 5-Minute Challenge →
+    </button>
+
+    <p class="note">
+        Microphone access is optional. Browser speech recognition
+        may send audio to the browser provider's speech service.
+        Use headphones in the classroom. Chrome or Edge is recommended.
+    </p>
+
+</section>
+
+<!-- HISTORY -->
+
+<section class="panel hidden" id="historyScreen">
+
+    <div class="eyebrow">CUMULATIVE LEARNING</div>
+
+    <h2>Your Learning History</h2>
+
+    <div id="historyContent"></div>
+
+    <h3>Cluster Progress</h3>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Cluster</th>
+                    <th>Sessions</th>
+                    <th>Latest Match</th>
+                    <th>Recommendation</th>
+                </tr>
+            </thead>
+            <tbody id="historyTable"></tbody>
+        </table>
+    </div>
+
+    <div class="button-row">
+        <button class="btn secondary" id="backHome">
+            ← Back
+        </button>
+        <button class="btn warning" id="clearHistory">
+            Clear History
+        </button>
+    </div>
+
+</section>
+
+<!-- MAIN ACTIVITY -->
+
+<section class="hidden" id="activityScreen">
+
+    <div class="stage-nav" id="stageNav">
+        <div class="stage">1. Test</div>
+        <div class="stage">2. Listen</div>
+        <div class="stage">3. Practice</div>
+        <div class="stage">4. Rhythm</div>
+        <div class="stage">5. Transfer</div>
+        <div class="stage">6. Review</div>
+    </div>
+
+    <section class="panel">
+
+        <div class="eyebrow" id="stageLabel"></div>
+
+        <h2 id="stageTitle"></h2>
+
+        <p class="muted" id="stageInstruction"></p>
+
+        <p class="small muted" id="stageTiming"></p>
+
+        <div id="sessionClusters" class="cluster-grid"></div>
+
+    </section>
+
+    <section class="panel" id="learningPanel">
+
+        <div id="targetArea">
+            <div class="target" id="targetCluster"></div>
+            <div class="ipa" id="targetIPA"></div>
+        </div>
+
+        <div class="word-list hidden" id="wordList"></div>
+
+        <div class="tip hidden" id="tipBox">
+            <strong>💡 Articulation Tip</strong>
+            <p id="pronunciationTip"></p>
+        </div>
+
+        <div class="hidden" id="minimalPairArea">
+
+            <h3>Contrast the Sounds</h3>
+
+            <div class="pair-grid">
+
+                <div class="pair">
+                    <strong id="pairA"></strong>
+                    <p class="small" id="pairMeaningA"></p>
+                    <button class="btn secondary" id="playPairA">
+                        🔊 Listen
+                    </button>
+                </div>
+
+                <div class="pair">
+                    <strong id="pairB"></strong>
+                    <p class="small" id="pairMeaningB"></p>
+                    <button class="btn secondary" id="playPairB">
+                        🔊 Listen
+                    </button>
+                </div>
+
+            </div>
+
+            <button class="btn secondary full" id="playBothPairs">
+                🔊 Compare Both Sounds
+            </button>
+
+            <p class="small muted" id="pairTip"></p>
+
+        </div>
+
+        <div class="twister" id="sentence"></div>
+
+        <!-- RHYTHM -->
+
+        <div id="rhythmArea" class="hidden">
+
+            <h3>Feel the Rhythm</h3>
+
+            <p class="small muted">
+                Large circles represent stronger syllables.
+                Small circles represent weaker syllables.
+            </p>
+
+            <div class="rhythm-line" id="rhythmLine"></div>
+
+            <button class="btn secondary full" id="playBeat">
+                🥁 Practice Rhythm Guide
+            </button>
+
+            <p class="note">
+                This is a suggested practice rhythm,
+                not a measurement of your actual speech rhythm.
+            </p>
+
+        </div>
+
+        <!-- TRANSFER TASK -->
+
+        <div id="transferArea" class="hidden">
+
+            <div class="button-row">
+
+                <button class="btn primary" id="guidedMode">
+                    Guided Speaking
+                </button>
+
+                <button class="btn secondary" id="freeMode">
+                    Free Speaking
+                </button>
+
+            </div>
+
+            <div id="freeTask" class="hidden">
+
+                <div class="scene" id="scene"></div>
+
+                <h3 id="freePrompt"></h3>
+
+                <div id="keywords"></div>
+
+                <p class="muted small">
+                    Speak in your own words for 15–20 seconds.
+                    Try to use at least two target words.
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- AUDIO MODEL -->
+
+        <div id="modelArea">
+
+            <div class="speed-grid">
+
+                <button class="speed" data-rate="0.7">
+                    🐢 Slow
+                </button>
+
+                <button class="speed selected" data-rate="1">
+                    Normal
+                </button>
+
+                <button class="speed" data-rate="1.2">
+                    ⚡ Fast
+                </button>
+
+            </div>
+
+            <button class="btn primary full" id="listenButton">
+                🔊 Listen to the Model
+            </button>
+
+        </div>
+
+        <!-- SPEECH RECOGNITION -->
+
+        <div class="mic-area" id="micArea">
+
+            <button class="mic-button" id="micButton"
+                aria-label="Start speech recognition">
+                🎤
+            </button>
+
+            <p id="micStatus" class="small muted" role="status">
+                Tap the microphone and speak.
+            </p>
+
+            <button class="btn secondary full" id="manualButton">
+                Practice Without Speech Recognition
+            </button>
+
+        </div>
+
+        <!-- CORRECTIVE FEEDBACK -->
+
+        <div class="feedback hidden" id="feedback"
+            aria-live="polite">
+
+            <p class="eyebrow">YOUR PERFORMANCE</p>
+
+            <p class="small muted">Recognized speech</p>
+
+            <p id="transcript"></p>
+
+            <div id="comparisonArea">
+
+                <p class="small muted">Target sentence</p>
+
+                <p id="comparison"></p>
+
+            </div>
+
+            <p class="small muted" id="scoreLabel"
+                style="text-align:center">
+                WORD MATCH
+            </p>
+
+            <div class="score" id="matchScore">—</div>
+
+            <p id="targetFeedback"></p>
+
+            <div class="adaptive-box" id="adaptiveBox">
+
+                <strong id="adaptiveTitle"></strong>
+
+                <p id="adaptiveMessage"></p>
+
+                <p id="correctiveMessage"></p>
+
+                <div id="reviewWords"></div>
+
+            </div>
+
+            <button class="btn primary full" id="retryButton">
+                ↻ Practice Again
+            </button>
+
+            <p class="note">
+                Speech recognition provides word-level evidence.
+                It cannot reliably identify individual phoneme errors,
+                vowel insertion, stress or rhythm accuracy.
+            </p>
+
+        </div>
+
+        <!-- RECORD AND COMPARE -->
+
+        <div class="audio-box hidden" id="recordArea">
+
+            <h3>🎧 Record & Compare</h3>
+
+            <p class="small muted">
+                Listen to the model, record yourself,
+                and compare your pronunciation.
+                Recording and speech recognition work separately.
+            </p>
+
+            <button class="btn secondary full" id="recordButton">
+                🔴 Record My Voice
+            </button>
+
+            <p class="small muted" id="recordStatus" role="status">
+                Recordings stay in this page unless you download them.
+            </p>
+
+            <audio id="myAudio" controls class="hidden"></audio>
+
+            <button class="btn secondary full hidden"
+                id="downloadAudio">
+                Save My Recording
+            </button>
+
+        </div>
+
+        <!-- MANUAL PRACTICE -->
+
+        <div class="audio-box hidden" id="manualArea">
+
+            <h3>Self-check</h3>
+
+            <div class="checklist">
+
+                <label>
+                    <input type="checkbox" id="manual1">
+                    I completed the speaking task.
+                </label>
+
+                <label>
+                    <input type="checkbox" id="manual2">
+                    I connected the consonants without adding a vowel.
+                </label>
+
+                <label>
+                    <input type="checkbox" id="manual3">
+                    I used clear stress and natural rhythm.
+                </label>
+
+            </div>
+
+            <button class="btn success full" id="saveManual">
+                Save My Practice
+            </button>
+
+        </div>
+
+        <!-- NAVIGATION -->
+
+        <div class="button-row">
+
+            <button class="btn secondary" id="previousCluster">
+                ← Previous
+            </button>
+
+            <button class="btn secondary" id="nextCluster">
+                Next Cluster →
+            </button>
+
+        </div>
+
+        <button class="btn primary full" id="nextStage">
+            Continue →
+        </button>
+
+        <button class="btn secondary full" id="finishEarly">
+            Finish & View Results
+        </button>
+
+    </section>
+
+</section>
+
+<!-- FINAL REFLECTION -->
+
+<section class="panel hidden" id="reflectionScreen">
+
+    <div class="eyebrow">STAGE 6 · REFLECTION</div>
+
+    <h2>How did you do?</h2>
+
+    <p class="muted">
+        Think about your pronunciation, not just your score.
+    </p>
+
+    <div class="checklist">
+
+        <label>
+            <input type="checkbox" class="reflection">
+            I connected consonant clusters without extra vowels.
+        </label>
+
+        <label>
+            <input type="checkbox" class="reflection">
+            I paid attention to the differences between similar sounds.
+        </label>
+
+        <label>
+            <input type="checkbox" class="reflection">
+            I tried to use natural sentence stress and rhythm.
+        </label>
+
+        <label>
+            <input type="checkbox" class="reflection">
+            I tried to use the target sounds in a new sentence.
+        </label>
+
+    </div>
+
+    <h3>How confident do you feel?</h3>
+
+    <select id="confidence">
+        <option value="">Choose your answer</option>
+        <option value="1">1 — Not confident yet</option>
+        <option value="2">2 — A little confident</option>
+        <option value="3">3 — Somewhat confident</option>
+        <option value="4">4 — Confident</option>
+        <option value="5">5 — Very confident</option>
+    </select>
+
+    <button class="btn primary full" id="showReport">
+        🏆 Show My Report
+    </button>
+
+</section>
+
+<!-- REPORT -->
+
+<section class="panel hidden" id="reportScreen">
+
+    <div class="report-hero">
+
+        <div class="trophy">🏆</div>
+
+        <h2>Challenge Complete!</h2>
+
+        <p id="reportMessage" class="muted"></p>
+
+    </div>
+
+    <div class="report-grid">
+
+        <div class="report-stat">
+            <strong id="finalXP">0</strong>
+            Total XP
+        </div>
+
+        <div class="report-stat">
+            <strong id="finalAttempts">0</strong>
+            Recognized Speaking Attempts
+        </div>
+
+        <div class="report-stat">
+            <strong id="finalPre">—</strong>
+            Diagnostic Match
+        </div>
+
+        <div class="report-stat">
+            <strong id="finalPost">—</strong>
+            Post-task Match
+        </div>
+
+        <div class="report-stat">
+            <strong id="finalGain">—</strong>
+            Matched-item Change
+        </div>
+
+        <div class="report-stat">
+            <strong id="finalConfidence">—</strong>
+            Speaking Confidence
+        </div>
+
+    </div>
+
+    <h3>Cluster-by-Cluster Results</h3>
+
+    <div class="table-wrap">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Cluster</th>
+                    <th>Pre</th>
+                    <th>Post</th>
+                    <th>Change</th>
+                    <th>Practice Best</th>
+                </tr>
+            </thead>
+            <tbody id="resultTable"></tbody>
+        </table>
+
+    </div>
+
+    <div class="tip">
+        <strong>🎯 Recommended Next Step</strong>
+        <p id="nextRecommendation"></p>
+    </div>
+
+    <div class="audio-box">
+
+        <h3>Transfer Task</h3>
+
+        <p id="transferReport"></p>
+
+    </div>
+
+    <div class="audio-box">
+
+        <h3>Self-assessment</h3>
+
+        <p id="selfReport"></p>
+
+    </div>
+
+    <div class="audio-box">
+
+        <h3>👩‍🏫 Teacher Feedback</h3>
+
+        <p class="muted small">
+            Ask your teacher to listen to your pronunciation
+            and review the following criteria.
+        </p>
+
+        <div class="checklist">
+
+            <label>
+                <input type="checkbox">
+                Clear production of consonant clusters
+            </label>
+
+            <label>
+                <input type="checkbox">
+                No unnecessary vowel insertion
+            </label>
+
+            <label>
+                <input type="checkbox">
+                Appropriate stress and rhythm
+            </label>
+
+            <label>
+                <input type="checkbox">
+                Overall comprehensibility
+            </label>
+
+        </div>
+
+    </div>
+
+    <div class="audio-box hidden" id="finalAudioArea">
+
+        <h3>Your Latest Recording</h3>
+
+        <p id="finalAudioLabel" class="small muted"></p>
+
+        <audio controls id="finalAudio"></audio>
+
+        <button class="btn secondary full" id="finalDownload">
+            Download Recording
+        </button>
+
+    </div>
+
+    <button class="btn secondary full" id="exportReport">
+        📥 Download Learning Report
+    </button>
+
+    <button class="btn primary full" id="restartButton">
+        Start Another Challenge ↻
+    </button>
+
+    <p class="note">
+        Pre/post results use the same target sentences.
+        Improvement in word recognition does not establish
+        improvement in phoneme-level pronunciation or prove
+        a causal learning effect.
+    </p>
+
+</section>
+
+<footer class="note" style="text-align:center">
+
+    <p>Research-informed pronunciation learning design</p>
+
+    <p>
+        Lee, J., Jang, J., & Plonsky, L. (2015).
+        The effectiveness of second language pronunciation
+        instruction: A meta-analysis.
+        Applied Linguistics, 36(3), 345–366.
+    </p>
+
+    <p>
+        The adaptive thresholds and activities are design choices,
+        not validated assessment standards from the study.
+    </p>
+
+</footer>
+
+</main>
+
+<script>
+
+"use strict";
+
+// ============================================
+// 1. LEARNING CONTENT
+// ============================================
+
+const lessons = [
+
+    {
+        cluster: "sm",
+        ipa: "/sm/",
+        words: ["small", "smart", "smile"],
+        sentence: "Small smart students smile.",
+        diagnostic: "Small students smile.",
+        transfer: "My smart sister has a small smile.",
+        pair: ["smile", "mile"],
+        meanings: ["미소 짓다", "마일"],
+        tip:
+            "Start with /s/, then close your lips for /m/. " +
+            "Connect them without adding a vowel. " +
+            "/s/에서 입술을 닫아 /m/으로 연결하세요.",
+        pairTip:
+            "Listen for the initial /s/ in smile. " +
+            "Do not omit the first consonant.",
+        rhythm: [
+            ["SMALL", true],
+            ["SMART", true],
+            ["STU", true],
+            ["dents", false],
+            ["SMILE", true]
+        ],
+        scene: "🏫 📚 😊",
+        prompt: "Describe a student at school.",
+        keywords: ["small", "smart", "smile", "smooth"]
+    },
+
+    {
+        cluster: "sn",
+        ipa: "/sn/",
+        words: ["snow", "snake", "snack"],
+        sentence: "Sneaky snakes sneak snacks.",
+        diagnostic: "Snakes sneak snacks.",
+        transfer: "We ate snacks while watching the snow.",
+        pair: ["snow", "no"],
+        meanings: ["눈", "아니요"],
+        tip:
+            "Move from /s/ directly to /n/. " +
+            "Place your tongue tip behind your upper teeth. " +
+            "두 자음 사이에 모음을 넣지 마세요.",
+        pairTip:
+            "Snow begins with /sn/, while no begins with /n/.",
+        rhythm: [
+            ["SNEA", true],
+            ["ky", false],
+            ["SNAKES", true],
+            ["SNEAK", true],
+            ["SNACKS", true]
+        ],
+        scene: "❄️ 🏔️ 🍪",
+        prompt: "Describe a snowy winter day.",
+        keywords: ["snow", "snack", "snowman", "snowy"]
+    },
+
+    {
+        cluster: "st",
+        ipa: "/st/",
+        words: ["stop", "step", "stone"],
+        sentence: "Steve stops at the steep stone steps.",
+        diagnostic: "Steve stops at the steps.",
+        transfer: "The students stopped near the stone statue.",
+        pair: ["stop", "top"],
+        meanings: ["멈추다", "맨 위"],
+        tip:
+            "Move from /s/ directly to /t/. " +
+            "The /t/ after /s/ usually has less aspiration. " +
+            "/s/와 /t/를 끊지 말고 연결하세요.",
+        pairTip:
+            "Stop begins with /st/, while top begins with /t/.",
+        rhythm: [
+            ["STEVE", true],
+            ["STOPS", true],
+            ["at", false],
+            ["the", false],
+            ["STEEP", true],
+            ["STONE", true],
+            ["STEPS", true]
+        ],
+        scene: "🏫 🧑‍🎓 🚌",
+        prompt: "Describe students waiting for a bus.",
+        keywords: ["students", "stop", "stand", "station"]
+    },
+
+    {
+        cluster: "bl",
+        ipa: "/bl/",
+        words: ["black", "blue", "block"],
+        sentence: "Blake blows big blue bubbles.",
+        diagnostic: "Blake blows blue bubbles.",
+        transfer: "The black bag has a blue blanket.",
+        pair: ["bloom", "broom"],
+        meanings: ["꽃이 피다", "빗자루"],
+        tip:
+            "Release your lips for /b/, then move into /l/. " +
+            "Touch your tongue tip to the alveolar ridge. " +
+            "/l/에서 혀끝을 윗잇몸에 대세요.",
+        pairTip:
+            "Bloom uses /l/. Broom uses /r/.",
+        rhythm: [
+            ["BLAKE", true],
+            ["blows", false],
+            ["BIG", true],
+            ["BLUE", true],
+            ["BUB", true],
+            ["bles", false]
+        ],
+        scene: "🔵 🎈 🧥",
+        prompt: "Describe the colors of your clothes.",
+        keywords: ["blue", "black", "blouse", "blanket"]
+    },
+
+    {
+        cluster: "br",
+        ipa: "/br/",
+        words: ["brave", "brown", "bread"],
+        sentence: "Brave Brian brings brown bread.",
+        diagnostic: "Brian brings brown bread.",
+        transfer: "My brother brought a bright brown brush.",
+        pair: ["broom", "bloom"],
+        meanings: ["빗자루", "꽃이 피다"],
+        tip:
+            "Release /b/ and move into English /r/. " +
+            "Keep the tongue tip from touching the alveolar ridge. " +
+            "/r/에서는 혀끝이 윗잇몸에 닿지 않도록 하세요.",
+        pairTip:
+            "Broom uses /r/. Bloom uses /l/.",
+        rhythm: [
+            ["BRAVE", true],
+            ["BRI", true],
+            ["an", false],
+            ["brings", false],
+            ["BROWN", true],
+            ["BREAD", true]
+        ],
+        scene: "🥐 🍞 🧑",
+        prompt: "Describe what your brother eats for breakfast.",
+        keywords: ["brother", "bread", "brown", "breakfast"]
+    },
+
+    {
+        cluster: "cl",
+        ipa: "/kl/",
+        words: ["clean", "class", "clock"],
+        sentence: "Clever Clara cleans cloudy clocks.",
+        diagnostic: "Clara cleans clocks.",
+        transfer: "Our class cleans the classroom.",
+        pair: ["clown", "crown"],
+        meanings: ["광대", "왕관"],
+        tip:
+            "Release /k/ and move directly into /l/. " +
+            "Touch your tongue tip behind your upper teeth. " +
+            "/k/와 /l/ 사이에 모음을 넣지 마세요.",
+        pairTip:
+            "Clown begins with /kl/. Crown begins with /kr/.",
+        rhythm: [
+            ["CLEV", true],
+            ["er", false],
+            ["CLA", true],
+            ["ra", false],
+            ["cleans", false],
+            ["CLOUD", true],
+            ["y", false],
+            ["CLOCKS", true]
+        ],
+        scene: "🏫 🧹 🕒",
+        prompt: "Describe your classroom.",
+        keywords: ["class", "clean", "clock", "classroom"]
+    },
+
+    {
+        cluster: "cr",
+        ipa: "/kr/",
+        words: ["crazy", "crow", "crackers"],
+        sentence: "Crazy crows crack crispy crackers.",
+        diagnostic: "Crows crack crackers.",
+        transfer: "The crowd created a crazy cartoon.",
+        pair: ["crown", "clown"],
+        meanings: ["왕관", "광대"],
+        tip:
+            "Move directly from /k/ into /r/. " +
+            "Do not touch the alveolar ridge with your tongue tip. " +
+            "/k/에서 /r/로 바로 연결하세요.",
+        pairTip:
+            "Crown uses /kr/. Clown uses /kl/.",
+        rhythm: [
+            ["CRA", true],
+            ["zy", false],
+            ["CROWS", true],
+            ["CRACK", true],
+            ["CRIS", true],
+            ["py", false],
+            ["CRACK", true],
+            ["ers", false]
+        ],
+        scene: "🐦 🍪 🌳",
+        prompt: "Describe a crow looking for food.",
+        keywords: ["crow", "cracker", "crazy", "crack"]
+    },
+
+    {
+        cluster: "fl",
+        ipa: "/fl/",
+        words: ["flat", "fluffy", "fly"],
+        sentence: "Fluffy flies fly over flat flowers.",
+        diagnostic: "Fluffy flies fly.",
+        transfer: "A fly flew over the flowers.",
+        pair: ["flea", "free"],
+        meanings: ["벼룩", "자유로운"],
+        tip:
+            "Touch your upper teeth to your lower lip for /f/, " +
+            "then move into /l/. " +
+            "/f/와 /l/ 사이에 모음을 추가하지 마세요.",
+        pairTip:
+            "Flea begins with /fl/. Free begins with /fr/.",
+        rhythm: [
+            ["FLUF", true],
+            ["fy", false],
+            ["FLIES", true],
+            ["FLY", true],
+            ["O", true],
+            ["ver", false],
+            ["FLAT", true],
+            ["FLOW", true],
+            ["ers", false]
+        ],
+        scene: "🌸 🦋 🌿",
+        prompt: "Describe a garden in spring.",
+        keywords: ["flowers", "fly", "fluffy", "flat"]
+    },
+
+    {
+        cluster: "fr",
+        ipa: "/fr/",
+        words: ["fresh", "friend", "fruit"],
+        sentence: "Friendly Fred fries fresh fruit.",
+        diagnostic: "Fred fries fresh fruit.",
+        transfer: "My friend brought fresh fruit from France.",
+        pair: ["free", "flea"],
+        meanings: ["자유로운", "벼룩"],
+        tip:
+            "Move from /f/ directly into /r/. " +
+            "Keep your tongue tip away from the alveolar ridge. " +
+            "/f/에서 /r/로 끊김 없이 연결하세요.",
+        pairTip:
+            "Free uses /fr/. Flea uses /fl/.",
+        rhythm: [
+            ["FRIEND", true],
+            ["ly", false],
+            ["FRED", true],
+            ["fries", false],
+            ["FRESH", true],
+            ["FRUIT", true]
+        ],
+        scene: "🍓 🍎 🧑‍🤝‍🧑",
+        prompt: "Describe a picnic with your friends.",
+        keywords: ["friend", "fresh", "fruit", "Friday"]
+    }
+
+];
+
+// ============================================
+// 2. STAGE CONFIGURATION
+// ============================================
+
+const stages = [
+
+    {
+        label: "STAGE 1 · DIAGNOSTIC TEST",
+        title: "Let's check your starting point.",
+        instruction:
+            "Read the short sentence once without listening " +
+            "to a model. Then move to the next cluster.",
+        duration: 30
+    },
+
+    {
+        label: "STAGE 2 · LISTEN & NOTICE",
+        title: "Listen and notice the sounds.",
+        instruction:
+            "Listen to the model, study the mouth-position tip, " +
+            "and compare similar sounds.",
+        duration: 45
+    },
+
+    {
+        label: "STAGE 3 · ADAPTIVE PRACTICE",
+        title: "Practice your target sounds.",
+        instruction:
+            "Read the tongue twister. Use your feedback " +
+            "to improve difficult words and try again.",
+        duration: 90
+    },
+
+    {
+        label: "STAGE 4 · STRESS & RHYTHM",
+        title: "Speak with natural rhythm.",
+        instruction:
+            "Notice stronger and weaker syllables. " +
+            "Maintain clear consonant clusters and natural rhythm.",
+        duration: 45
+    },
+
+    {
+        label: "STAGE 5 · POST-TEST & TRANSFER",
+        title: "Apply what you have learned.",
+        instruction:
+            "First complete the same short diagnostic sentences. " +
+            "Then try a new sentence or a free speaking task.",
+        duration: 60
+    },
+
+    {
+        label: "STAGE 6 · REFLECTION",
+        title: "Reflect on your progress.",
+        instruction:
+            "Review your learning and complete the self-assessment.",
+        duration: 30
+    }
+
+];
+
+// ============================================
+// 3. APPLICATION STATE
+// ============================================
+
+const $ = id => document.getElementById(id);
+
+const Recognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+const HISTORY_KEY = "adaptiveTongueTwisterV2";
+
+let stage = 0;
+let clusterIndex = 0;
+let sessionClusters = [];
+let customClusters = [];
+
+let xp = 0;
+let attempts = 0;
+let seconds = 300;
+let running = false;
+
+let timerID = null;
+let sessionStart = 0;
+let stageStart = 0;
+
+let rate = 1;
+let recognition = null;
+let recognizing = false;
+let recognitionToken = 0;
+
+let preScores = {};
+let postScores = {};
+let bestScores = {};
+let manualPractice = {};
+let transferResults = [];
+let completed = new Set();
+let rewardKeys = new Set();
+let heard = new Set();
+
+let transferMode = "post";
+let lastReport = null;
+let reportSaved = false;
+
+let recorder = null;
+let recording = false;
+let mediaStream = null;
+let recordingChunks = [];
+let recordingURL = null;
+let recordingBlob = null;
+let recordingLabel = "";
+let recordingToken = 0;
+let requestingAudio = false;
+
+let beatTimers = [];
+let beatContext = null;
+
+// ============================================
+// 4. HISTORY AND STORAGE
+// ============================================
+
+function loadHistory() {
+
+    try {
+
+        const data = JSON.parse(
+            localStorage.getItem(HISTORY_KEY) || "null"
+        );
+
+        if (
+            data &&
+            Array.isArray(data.sessions) &&
+            data.clusters
+        ) {
+            return data;
+        }
+
+    } catch (error) {}
+
+    return {
+        sessions: [],
+        clusters: {}
+    };
+
+}
+
+function saveHistory(data) {
+
+    try {
+
+        localStorage.setItem(
+            HISTORY_KEY,
+            JSON.stringify(data)
+        );
+
+        return true;
+
+    } catch (error) {
+
+        return false;
+
+    }
+
+}
+
+function historyRecommendation() {
+
+    const history = loadHistory();
+
+    return [...lessons]
+        .sort((a, b) => {
+
+            const ha = history.clusters[a.cluster];
+            const hb = history.clusters[b.cluster];
+
+            function priority(record) {
+
+                if (!record) return 70;
+
+                if (
+                    typeof record.latestScore === "number"
+                ) {
+                    return 100 - record.latestScore +
+                        (record.latestScore < 80 ? 40 : 0);
+                }
+
+                return 75;
+
+            }
+
+            return priority(hb) - priority(ha) ||
+                (ha?.sessions || 0) -
+                (hb?.sessions || 0);
+
+        })
+        .slice(0, 3)
+        .map(item => item.cluster);
+
+}
+
+function renderStartClusters() {
+
+    $("allClusters").replaceChildren();
+
+    lessons.forEach(lesson => {
+
+        const button = document.createElement("button");
+
+        button.className = "cluster-card";
+        button.textContent = lesson.cluster;
+
+        const small = document.createElement("small");
+
+        small.textContent = lesson.words[0];
+
+        button.appendChild(small);
+
+        const selected =
+            customClusters.includes(lesson.cluster);
+
+        button.classList.toggle("selected", selected);
+
+        button.setAttribute(
+            "aria-pressed",
+            String(selected)
+        );
+
+        button.onclick = () => {
+
+            $("trainingMode").value = "custom";
+
+            if (
+                customClusters.includes(lesson.cluster)
+            ) {
+
+                customClusters = customClusters.filter(
+                    item => item !== lesson.cluster
+                );
+
+            } else {
+
+                if (customClusters.length >= 3) {
+                    customClusters.shift();
+                }
+
+                customClusters.push(lesson.cluster);
+
+            }
+
+            $("customNotice").classList.remove("hidden");
+
+            renderStartClusters();
+
+        };
+
+        $("allClusters").appendChild(button);
+
+    });
+
+    $("recommendedFocus").textContent =
+        "Recommended clusters: " +
+        historyRecommendation().join(" · ");
+
+}
+
+$("trainingMode").onchange = () => {
+
+    const custom = $("trainingMode").value === "custom";
+
+    $("customNotice").classList.toggle(
+        "hidden",
+        !custom
+    );
+
+    if (!custom) {
+        customClusters = [];
+        renderStartClusters();
+    }
+
+};
+
+function selectSessionClusters() {
+
+    const mode = $("trainingMode").value;
+
+    const groups = {
+
+        s: ["sm", "sn", "st"],
+        b: ["bl", "br"],
+        c: ["cl", "cr"],
+        f: ["fl", "fr"]
+
+    };
+
+    if (groups[mode]) return [...groups[mode]];
+
+    if (mode === "custom") {
+
+        if (!customClusters.length) {
+
+            alert("Please select at least one cluster.");
+
+            return null;
+
+        }
+
+        return [...customClusters];
+
+    }
+
+    if (mode === "mixed") {
+
+        const shuffled = lessons.map(item => item.cluster);
+
+        for (let i = shuffled.length - 1; i > 0; i--) {
+
+            const j = Math.floor(
+                Math.random() * (i + 1)
+            );
+
+            [shuffled[i], shuffled[j]] =
+                [shuffled[j], shuffled[i]];
+
+        }
+
+        return shuffled.slice(0, 3);
+
+    }
+
+    return historyRecommendation();
+
+}
+
+function renderHistory() {
+
+    const history = loadHistory();
+
+    $("historyContent").replaceChildren();
+    $("historyTable").replaceChildren();
+
+    if (!history.sessions.length) {
+
+        $("historyContent").textContent =
+            "No sessions yet. Complete your first challenge!";
+
+    } else {
+
+        history.sessions.slice(-10).reverse()
+            .forEach(session => {
+
+                const row = document.createElement("div");
+
+                row.className = "history-item";
+
+                row.textContent =
+                    session.date + " | " +
+                    session.clusters.join(", ") +
+                    " | XP: " + session.xp;
+
+                $("historyContent").appendChild(row);
+
+            });
+
+    }
+
+    lessons.forEach(lesson => {
+
+        const record =
+            history.clusters[lesson.cluster];
+
+        const score = record?.latestScore;
+
+        const tr = document.createElement("tr");
+
+        [
+            lesson.cluster,
+            record?.sessions || 0,
+            formatScore(score),
+            typeof score !== "number"
+                ? "Practice"
+                : score < 80
+                    ? "Review"
+                    : "Maintain"
+
+        ].forEach(value => {
+
+            const td = document.createElement("td");
+
+            td.textContent = value;
+
+            tr.appendChild(td);
+
+        });
+
+        $("historyTable").appendChild(tr);
+
+    });
+
+}
+
+$("historyButton").onclick = () => {
+
+    renderHistory();
+
+    showScreen("historyScreen");
+
+};
+
+$("backHome").onclick = () => {
+
+    renderStartClusters();
+
+    showScreen("startScreen");
+
+};
+
+$("clearHistory").onclick = () => {
+
+    if (!confirm("Delete all saved learning history?")) {
+        return;
+    }
+
+    try {
+
+        localStorage.removeItem(HISTORY_KEY);
+
+    } catch (error) {}
+
+    renderHistory();
+    renderStartClusters();
+
+};
+
+// ============================================
+// 5. SCREEN MANAGEMENT
+// ============================================
+
+function showScreen(id) {
+
+    [
+        "startScreen",
+        "historyScreen",
+        "activityScreen",
+        "reflectionScreen",
+        "reportScreen"
+
+    ].forEach(screen => {
+
+        $(screen).classList.toggle(
+            "hidden",
+            screen !== id
+        );
+
+    });
+
+    window.scrollTo(0, 0);
+
+}
+
+function currentLesson() {
+
+    return lessons.find(
+        item => item.cluster === sessionClusters[clusterIndex]
+    );
+
+}
+
+function currentSentence() {
+
+    const lesson = currentLesson();
+
+    if (stage === 0) {
+
+        return lesson.diagnostic;
+
+    }
+
+    if (stage === 4) {
+
+        if (transferMode === "post") {
+
+            return lesson.diagnostic;
+
+        }
+
+        if (transferMode === "free") {
+
+            return "";
+
+        }
+
+        return lesson.transfer;
+
+    }
+
+    return lesson.sentence;
+
+}
+
+function formatScore(score) {
+
+    return typeof score === "number"
+        ? score + "%"
+        : "—";
+
+}
+
+function updateDashboard() {
+
+    $("xp").textContent = xp;
+
+    $("stageCount").textContent =
+        running || reportSaved
+            ? Math.min(stage + 1, 6) + "/6"
+            : "0/6";
+
+    $("progressFill").style.width =
+        Math.min(100, (300 - seconds) / 300 * 100) +
+        "%";
+
+}
+
+function addReward(key, value) {
+
+    if (!rewardKeys.has(key)) {
+
+        rewardKeys.add(key);
+
+        xp += value;
+
+        updateDashboard();
+
+    }
+
+}
+
+// ============================================
+// 6. TIMER
+// ============================================
+
+function formatTime(value) {
+
+    const safe = Math.max(0, value);
+
+    return String(
+        Math.floor(safe / 60)
+    ).padStart(2, "0") +
+
+    ":" +
+
+    String(safe % 60).padStart(2, "0");
+
+}
+
+function updateTimer() {
+
+    if (!running) return;
+
+    const elapsed = Math.floor(
+        (Date.now() - sessionStart) / 1000
+    );
+
+    seconds = Math.max(0, 300 - elapsed);
+
+    $("timer").textContent = formatTime(seconds);
+
+    $("timer").style.color =
+        seconds <= 30
+            ? "var(--red)"
+            : "var(--yellow)";
+
+    if (stage < 5) {
+
+        const stageElapsed = Math.floor(
+            (Date.now() - stageStart) / 1000
+        );
+
+        const remaining = Math.max(
+            0,
+            stages[stage].duration - stageElapsed
+        );
+
+        $("stageTiming").textContent =
+            remaining > 0
+                ? "Suggested stage time: " +
+                    formatTime(remaining)
+                : "Suggested time completed. Continue when ready.";
+
+    }
+
+    updateDashboard();
+
+    if (seconds <= 0) {
+
+        finishSession();
+
+    } else if (seconds <= 30 && stage < 5) {
+
+        openReflection();
+
+    }
+
+}
+
+function startSession() {
+
+    const selected = selectSessionClusters();
+
+    if (!selected) return;
+
+    cancelRecognition();
+    stopAudio();
+    stopRecording(true);
+    clearRecording();
+
+    sessionClusters = selected;
+
+    stage = 0;
+    clusterIndex = 0;
+
+    xp = 0;
+    attempts = 0;
+    seconds = 300;
+
+    preScores = {};
+    postScores = {};
+    bestScores = {};
+    manualPractice = {};
+    transferResults = [];
+
+    completed = new Set();
+    rewardKeys = new Set();
+    heard = new Set();
+
+    transferMode = "post";
+    reportSaved = false;
+    lastReport = null;
+    rate = 1;
+
+    $("confidence").value = "";
+
+    document.querySelectorAll(".reflection")
+        .forEach(item => item.checked = false);
+
+    running = true;
+
+    sessionStart = Date.now();
+    stageStart = Date.now();
+
+    clearInterval(timerID);
+
+    timerID = setInterval(updateTimer, 250);
+
+    showScreen("activityScreen");
+
+    renderActivity();
+
+    updateTimer();
+
+}
+
+$("startButton").onclick = startSession;
+
+// ============================================
+// 7. SPEECH SYNTHESIS
+// ============================================
+
+function speak(text, speed = rate) {
+
+    if (
+        recognizing ||
+        recording ||
+        requestingAudio
+    ) {
+        return;
+    }
+
+    if (!("speechSynthesis" in window)) {
+
+        alert("Speech playback is unavailable.");
+
+        return;
+
+    }
+
+    stopAudio();
+
+    const utterance =
+        new SpeechSynthesisUtterance(text);
+
+    utterance.lang = "en-US";
+    utterance.rate = speed;
+    utterance.pitch = 1;
+
+    const voices = speechSynthesis.getVoices();
+
+    const voice =
+        voices.find(
+            item => item.lang === "en-US" &&
+                item.localService
+        ) ||
+        voices.find(
+            item => item.lang === "en-US"
+        ) ||
+        voices.find(
+            item => item.lang.startsWith("en")
+        );
+
+    if (voice) {
+        utterance.voice = voice;
+    }
+
+    speechSynthesis.speak(utterance);
+
+}
+
+function stopAudio() {
+
+    if ("speechSynthesis" in window) {
+
+        speechSynthesis.cancel();
+
+    }
+
+    stopBeats();
+
+    $("myAudio").pause();
+    $("finalAudio").pause();
+
+}
+
+$("testSpeaker").onclick = () => {
+
+    speak(
+        "Small smart students smile. " +
+        "Welcome to the tongue twister challenge.",
+        1
+    );
+
+};
+
+document.querySelectorAll(".speed")
+    .forEach(button => {
+
+        button.onclick = () => {
+
+            rate = Number(button.dataset.rate);
+
+            updateSpeedButtons();
+
+        };
+
+    });
+
+function updateSpeedButtons() {
+
+    document.querySelectorAll(".speed")
+        .forEach(button => {
+
+            button.classList.toggle(
+                "selected",
+                Number(button.dataset.rate) === rate
+            );
+
+        });
+
+}
+
+// ============================================
+// 8. RENDER LEARNING ACTIVITY
+// ============================================
+
+function highlightText(container, text, cluster) {
+
+    container.replaceChildren();
+
+    text.split(/(\s+)/).forEach(word => {
+
+        if (
+            word.toLowerCase().startsWith(cluster)
+        ) {
+
+            const span = document.createElement("span");
+
+            span.className = "highlight";
+
+            span.textContent =
+                word.slice(0, cluster.length);
+
+            container.appendChild(span);
+
+            container.appendChild(
+                document.createTextNode(
+                    word.slice(cluster.length)
+                )
+            );
+
+        } else {
+
+            container.appendChild(
+                document.createTextNode(word)
+            );
+
+        }
+
+    });
+
+}
+
+function renderSessionClusters() {
+
+    $("sessionClusters").replaceChildren();
+
+    sessionClusters.forEach((cluster, index) => {
+
+        const button = document.createElement("button");
+
+        button.className = "cluster-card";
+
+        button.textContent = cluster;
+
+        button.classList.toggle(
+            "selected",
+            index === clusterIndex
+        );
+
+        let done = false;
+
+        if (stage === 0) {
+
+            done = preScores[cluster] !== undefined ||
+                manualPractice["0:" + cluster];
+
+        } else if (stage === 1) {
+
+            done = heard.has(cluster);
+
+        } else if (
+            stage === 4 &&
+            transferMode === "post"
+        ) {
+
+            done = postScores[cluster] !== undefined ||
+                manualPractice["post:" + cluster];
+
+        } else {
+
+            done = completed.has(stage + ":" + cluster);
+
+        }
+
+        button.classList.toggle(
+            "completed",
+            Boolean(done)
+        );
+
+        button.onclick = () => {
+
+            navigateCluster(index);
+
+        };
+
+        $("sessionClusters").appendChild(button);
+
+    });
+
+}
+
+function navigateCluster(index) {
+
+    cancelRecognition();
+    stopAudio();
+    stopRecording(true);
+
+    clusterIndex = Math.max(
+        0,
+        Math.min(sessionClusters.length - 1, index)
+    );
+
+    renderActivity();
+
+}
+
+function renderActivity() {
+
+    if (stage >= 5) return;
+
+    const lesson = currentLesson();
+    const config = stages[stage];
+
+    const testing =
+        stage === 0 ||
+        (stage === 4 && transferMode === "post");
+
+    const free =
+        stage === 4 && transferMode === "free";
+
+    $("stageLabel").textContent = config.label;
+
+    $("stageTitle").textContent = config.title;
+
+    $("stageInstruction").textContent =
+        stage === 4 && transferMode === "post"
+            ? "Post-test: read the same short sentence once " +
+                "without a model. Complete each cluster, " +
+                "then continue to a new speaking task."
+            : config.instruction;
+
+    $("targetCluster").textContent = lesson.cluster;
+    $("targetIPA").textContent = lesson.ipa;
+
+    $("targetIPA").classList.toggle(
+        "hidden",
+        testing
+    );
+
+    document.querySelectorAll(".stage")
+        .forEach((item, index) => {
+
+            item.classList.toggle(
+                "active",
+                index === stage
+            );
+
+            item.classList.toggle(
+                "done",
+                index < stage
+            );
+
+        });
+
+    $("wordList").classList.toggle(
+        "hidden",
+        testing || free
+    );
+
+    $("tipBox").classList.toggle(
+        "hidden",
+        testing || free
+    );
+
+    $("minimalPairArea").classList.toggle(
+        "hidden",
+        !(stage === 1 || stage === 2)
+    );
+
+    $("rhythmArea").classList.toggle(
+        "hidden",
+        stage !== 3
+    );
+
+    $("transferArea").classList.toggle(
+        "hidden",
+        stage !== 4 || transferMode === "post"
+    );
+
+    $("freeTask").classList.toggle(
+        "hidden",
+        !free
+    );
+
+    $("sentence").classList.toggle(
+        "hidden",
+        free
+    );
+
+    $("modelArea").classList.toggle(
+        "hidden",
+        testing || free
+    );
+
+    $("micArea").classList.toggle(
+        "hidden",
+        stage === 1
+    );
+
+    $("recordArea").classList.toggle(
+        "hidden",
+        stage !== 2 && stage !== 3 &&
+        !(stage === 4 && transferMode !== "post")
+    );
+
+    $("feedback").classList.add("hidden");
+    $("manualArea").classList.add("hidden");
+
+    $("manual1").checked = false;
+    $("manual2").checked = false;
+    $("manual3").checked = false;
+
+    setMicState(false);
+
+    $("pronunciationTip").textContent = lesson.tip;
+
+    if (testing) {
+
+        $("sentence").textContent = currentSentence();
+
+    } else {
+
+        highlightText(
+            $("sentence"),
+            currentSentence(),
+            lesson.cluster
+        );
+
+    }
+
+    $("wordList").replaceChildren();
+
+    lesson.words.forEach(word => {
+
+        const button = document.createElement("button");
+
+        button.className = "word-chip";
+
+        highlightText(
+            button,
+            word,
+            lesson.cluster
+        );
+
+        button.onclick = () => speak(word, 0.8);
+
+        $("wordList").appendChild(button);
+
+    });
+
+    $("pairA").textContent = lesson.pair[0];
+    $("pairB").textContent = lesson.pair[1];
+
+    $("pairMeaningA").textContent = lesson.meanings[0];
+    $("pairMeaningB").textContent = lesson.meanings[1];
+
+    $("pairTip").textContent = lesson.pairTip;
+
+    $("scene").textContent = lesson.scene;
+    $("freePrompt").textContent = lesson.prompt;
+
+    $("keywords").replaceChildren();
+
+    lesson.keywords.forEach(word => {
+
+        const span = document.createElement("span");
+
+        span.className = "keyword";
+        span.textContent = word;
+
+        $("keywords").appendChild(span);
+
+    });
+
+    $("guidedMode").classList.toggle(
+        "primary",
+        transferMode === "guided"
+    );
+
+    $("freeMode").classList.toggle(
+        "primary",
+        transferMode === "free"
+    );
+
+    $("previousCluster").disabled =
+        clusterIndex === 0;
+
+    $("nextCluster").disabled =
+        clusterIndex === sessionClusters.length - 1;
+
+    const labels = [
+
+        "Continue to Listen & Notice →",
+        "Start Adaptive Practice →",
+        "Continue to Stress & Rhythm →",
+        "Start Post-test →",
+        "Continue to Reflection →"
+
+    ];
+
+    $("nextStage").textContent =
+        stage === 4 && transferMode === "post"
+            ? "Start Transfer Challenge →"
+            : labels[stage];
+
+    renderRhythm();
+
+    renderSessionClusters();
+
+    updateSpeedButtons();
+
+    updateDashboard();
+
+}
+
+$("previousCluster").onclick = () => {
+
+    navigateCluster(clusterIndex - 1);
+
+};
+
+$("nextCluster").onclick = () => {
+
+    navigateCluster(clusterIndex + 1);
+
+};
+
+$("playPairA").onclick = () => {
+
+    speak(currentLesson().pair[0], 0.8);
+
+};
+
+$("playPairB").onclick = () => {
+
+    speak(currentLesson().pair[1], 0.8);
+
+};
+
+$("playBothPairs").onclick = () => {
+
+    const pair = currentLesson().pair;
+
+    speak(
+        pair[0] + ". " +
+        pair[1] + ". " +
+        pair[0] + ". " +
+        pair[1] + ".",
+        0.75
+    );
+
+};
+
+$("listenButton").onclick = () => {
+
+    if (recognizing || recording) return;
+
+    const sentence = currentSentence();
+
+    if (!sentence) return;
+
+    speak(sentence, rate);
+
+    heard.add(currentLesson().cluster);
+
+    addReward(
+        "listen:" + currentLesson().cluster,
+        5
+    );
+
+    renderSessionClusters();
+
+};
+
+// ============================================
+// 9. ADAPTIVE STAGE CONTROL
+// ============================================
+
+function prioritizeClusters() {
+
+    const order = new Map(
+        sessionClusters.map(
+            (cluster, index) => [cluster, index]
+        )
+    );
+
+    sessionClusters.sort((a, b) => {
+
+        const sa = preScores[a];
+        const sb = preScores[b];
+
+        const aKnown = typeof sa === "number";
+        const bKnown = typeof sb === "number";
+
+        if (aKnown && bKnown) {
+            return sa - sb;
+        }
+
+        if (aKnown !== bKnown) {
+            return aKnown ? -1 : 1;
+        }
+
+        return order.get(a) - order.get(b);
+
+    });
+
+}
+
+function advanceStage() {
+
+    if (!running) return;
+
+    cancelRecognition();
+    stopAudio();
+    stopRecording(true);
+
+    if (stage === 4) {
+
+        if (transferMode === "post") {
+
+            transferMode = "guided";
+
+            clusterIndex = 0;
+
+            renderActivity();
+
+        } else {
+
+            openReflection();
+
+        }
+
+        return;
+
+    }
+
+    stage++;
+
+    clusterIndex = 0;
+    stageStart = Date.now();
+
+    if (stage === 1 || stage === 2) {
+
+        prioritizeClusters();
+
+    }
+
+    if (stage === 2) {
+
+        const score =
+            preScores[currentLesson().cluster];
+
+        rate =
+            typeof score === "number" && score < 85
+                ? 0.7
+                : 1;
+
+    } else {
+
+        rate = 1;
+
+    }
+
+    if (stage === 4) {
+
+        transferMode = "post";
+
+    }
+
+    renderActivity();
+
+    updateTimer();
+
+}
+
+$("nextStage").onclick = advanceStage;
+
+function setTransferMode(mode) {
+
+    if (
+        stage !== 4 ||
+        transferMode === "post"
+    ) return;
+
+    cancelRecognition();
+    stopAudio();
+    stopRecording(true);
+
+    transferMode = mode;
+
+    renderActivity();
+
+}
+
+$("guidedMode").onclick = () => {
+
+    setTransferMode("guided");
+
+};
+
+$("freeMode").onclick = () => {
+
+    setTransferMode("free");
+
+};
+
+// ============================================
+// 10. SPEECH RECOGNITION
+// ============================================
+
+function setMicState(active) {
+
+    recognizing = active;
+
+    $("micButton").classList.toggle(
+        "recording",
+        active
+    );
+
+    $("micButton").textContent =
+        active ? "⏹" : "🎤";
+
+    $("micButton").setAttribute(
+        "aria-label",
+        active
+            ? "Stop speech recognition"
+            : "Start speech recognition"
+    );
+
+    $("micStatus").textContent =
+        active
+            ? "Listening... Speak clearly!"
+            : "Tap the microphone and speak.";
+
+    $("listenButton").disabled = active;
+
+    $("recordButton").disabled = active;
+
+}
+
+function cancelRecognition() {
+
+    recognitionToken++;
+
+    if (recognition) {
+
+        try {
+
+            recognition.abort();
+
+        } catch (error) {}
+
+        recognition = null;
+
+    }
+
+    setMicState(false);
+
+}
+
+function startRecognition() {
+
+    if (!running || stage === 1 || stage >= 5) {
+        return;
+    }
+
+    if (recording || requestingAudio) {
+
+        $("micStatus").textContent =
+            "Stop voice recording first.";
+
+        return;
+
+    }
+
+    const cluster = currentLesson().cluster;
+
+    const alreadyTested =
+        (stage === 0 &&
+            preScores[cluster] !== undefined) ||
+        (stage === 4 &&
+            transferMode === "post" &&
+            postScores[cluster] !== undefined);
+
+    if (alreadyTested) {
+
+        $("micStatus").textContent =
+            "Test result already saved. Move to the next cluster.";
+
+        return;
+
+    }
+
+    if (!Recognition) {
+
+        $("micStatus").textContent =
+            "Speech recognition is unavailable.";
+
+        $("manualArea").classList.remove("hidden");
+
+        return;
+
+    }
+
+    stopAudio();
+
+    cancelRecognition();
+
+    $("feedback").classList.add("hidden");
+
+    const instance = new Recognition();
+
+    recognition = instance;
+
+    instance.lang = "en-US";
+    instance.continuous =
+        stage === 4 && transferMode === "free";
+    instance.interimResults = false;
+    instance.maxAlternatives = 1;
+
+    const token = ++recognitionToken;
+
+    const snapshot = {
+
+        cluster,
+        stage,
+        transferMode,
+        sentence: currentSentence()
+
+    };
+
+    let recognizedText = "";
+    let failed = false;
+
+    instance.onstart = () => {
+
+        if (token !== recognitionToken) return;
+
+        setMicState(true);
+
+    };
+
+    instance.onresult = event => {
+
+        if (token !== recognitionToken) return;
+
+        const parts = [];
+
+        for (
+            let i = 0;
+            i < event.results.length;
+            i++
+        ) {
+
+            if (event.results[i].isFinal) {
+
+                parts.push(
+                    event.results[i][0].transcript
+                );
+
+            }
+
+        }
+
+        recognizedText = parts.join(" ");
+
+        if (instance.continuous) {
+
+            $("micStatus").textContent =
+                "Listening... Tap stop when finished.";
+
+        }
+
+    };
+
+    instance.onerror = event => {
+
+        if (token !== recognitionToken) return;
+
+        failed = true;
+
+        setMicState(false);
+
+        const messages = {
+
+            "not-allowed":
+                "Microphone permission was denied.",
+
+            "no-speech":
+                "No speech detected. Please try again.",
+
+            "network":
+                "Network error. Try self-assessment.",
+
+            "audio-capture":
+                "No microphone was detected.",
+
+            "service-not-allowed":
+                "Speech recognition service unavailable."
+
+        };
+
+        $("micStatus").textContent =
+            messages[event.error] ||
+            "Speech recognition failed.";
+
+        $("manualArea").classList.remove("hidden");
+
+    };
+
+    instance.onend = () => {
+
+        if (token !== recognitionToken) return;
+
+        recognition = null;
+
+        if (!failed) {
+
+            setMicState(false);
+
+        }
+
+        if (
+            recognizedText.trim() &&
+            running
+        ) {
+
+            evaluateSpeech(
+                recognizedText,
+                snapshot
+            );
+
+        } else if (!failed) {
+
+            $("micStatus").textContent =
+                "No result received. Please try again.";
+
+        }
+
+    };
+
+    try {
+
+        setMicState(true);
+
+        $("micStatus").textContent =
+            "Connecting to microphone...";
+
+        instance.start();
+
+    } catch (error) {
+
+        cancelRecognition();
+
+        $("micStatus").textContent =
+            "Unable to start speech recognition.";
+
+        $("manualArea").classList.remove("hidden");
+
+    }
+
+}
+
+$("micButton").onclick = () => {
+
+    if (recognizing && recognition) {
+
+        try {
+
+            recognition.stop();
+
+            $("micStatus").textContent =
+                "Processing your speech...";
+
+        } catch (error) {
+
+            cancelRecognition();
+
+        }
+
+    } else {
+
+        startRecognition();
+
+    }
+
+};
+
+// ============================================
+// 11. WORD-LEVEL ALIGNMENT
+// ============================================
+
+function tokenize(text) {
+
+    return text
+        .toLowerCase()
+        .replace(/[’']/g, "")
+        .replace(/[^a-z0-9\s]/g, " ")
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
+
+}
+
+function alignWords(expected, actual) {
+
+    const n = expected.length;
+    const m = actual.length;
+
+    const dp = Array.from(
+        { length: n + 1 },
+        () => Array(m + 1).fill(0)
+    );
+
+    for (let i = 0; i <= n; i++) {
+        dp[i][0] = i;
+    }
+
+    for (let j = 0; j <= m; j++) {
+        dp[0][j] = j;
+    }
+
+    for (let i = 1; i <= n; i++) {
+
+        for (let j = 1; j <= m; j++) {
+
+            const cost =
+                expected[i - 1] === actual[j - 1]
+                    ? 0
+                    : 1;
+
+            dp[i][j] = Math.min(
+
+                dp[i - 1][j] + 1,
+
+                dp[i][j - 1] + 1,
+
+                dp[i - 1][j - 1] + cost
+
+            );
+
+        }
+
+    }
+
+    const aligned =
+        expected.map(word => ({
+
+            expected: word,
+            actual: null,
+            matched: false
+
+        }));
+
+    let i = n;
+    let j = m;
+
+    while (i > 0 || j > 0) {
+
+        if (i > 0 && j > 0) {
+
+            const same =
+                expected[i - 1] === actual[j - 1];
+
+            const cost = same ? 0 : 1;
+
+            if (
+                dp[i][j] ===
+                dp[i - 1][j - 1] + cost
+            ) {
+
+                aligned[i - 1].actual =
+                    actual[j - 1];
+
+                aligned[i - 1].matched = same;
+
+                i--;
+                j--;
+
+                continue;
+
+            }
+
+        }
+
+        if (
+            i > 0 &&
+            dp[i][j] === dp[i - 1][j] + 1
+        ) {
+
+            i--;
+
+        } else if (j > 0) {
+
+            j--;
+
+        } else {
+
+            break;
+
+        }
+
+    }
+
+    const score = Math.max(
+
+        0,
+
+        Math.round(
+            (1 - dp[n][m] / Math.max(n, 1)) *
+            100
+        )
+
+    );
+
+    return {
+        score,
+        aligned
+    };
+
+}
+
+// ============================================
+// 12. CORRECTIVE FEEDBACK
+// ============================================
+
+function correctionFor(item, lesson) {
+
+    const expected = item.expected;
+    const actual = item.actual;
+
+    if (!actual) {
+
+        return expected +
+            " was not recognized. Listen and repeat it slowly.";
+
+    }
+
+    const lToR = {
+
+        bl: "br",
+        br: "bl",
+        cl: "cr",
+        cr: "cl",
+        fl: "fr",
+        fr: "fl"
+
+    };
+
+    const cluster = lesson.cluster;
+
+    if (
+        lToR[cluster] &&
+        actual.startsWith(lToR[cluster])
+    ) {
+
+        return expected +
+            " was recognized as " + actual +
+            ". Check the contrast between /l/ and /r/. " +
+            "This may be a pronunciation or recognition issue.";
+
+    }
+
+    if (
+        ["sm", "sn", "st"].includes(cluster) &&
+        actual === expected.slice(1)
+    ) {
+
+        return expected +
+            " was recognized as " + actual +
+            ". Check whether the initial /s/ is clear.";
+
+    }
+
+    return expected +
+        " was recognized as " + actual +
+        ". Review the model sound and the consonant connection.";
+
+}
+
+function renderReviewWords(items) {
+
+    $("reviewWords").replaceChildren();
+
+    const words = [
+        ...new Set(items.map(item => item.expected))
+    ];
+
+    words.forEach(word => {
+
+        const button = document.createElement("button");
+
+        button.className = "word-chip";
+        button.textContent = "🔊 " + word;
+
+        button.onclick = () => speak(word, 0.7);
+
+        $("reviewWords").appendChild(button);
+
+    });
+
+}
+
+function evaluateSpeech(spoken, snapshot) {
+
+    const lesson = lessons.find(
+        item => item.cluster === snapshot.cluster
+    );
+
+    const actual = tokenize(spoken);
+
+    if (!actual.length) {
+
+        $("micStatus").textContent =
+            "No words recognized.";
+
+        return;
+
+    }
+
+    attempts++;
+
+    const test =
+        snapshot.stage === 0 ||
+        (snapshot.stage === 4 &&
+            snapshot.transferMode === "post");
+
+    const free =
+        snapshot.stage === 4 &&
+        snapshot.transferMode === "free";
+
+    $("transcript").textContent = spoken;
+
+    $("comparisonArea").classList.toggle(
+        "hidden",
+        free
+    );
+
+    $("adaptiveBox").classList.toggle(
+        "hidden",
+        test
+    );
+
+    $("reviewWords").replaceChildren();
+
+    $("retryButton").classList.toggle(
+        "hidden",
+        test
+    );
+
+    if (free) {
+
+        evaluateFreeSpeech(spoken, lesson);
+
+        updateDashboard();
+
+        return;
+
+    }
+
+    const expected = tokenize(snapshot.sentence);
+
+    const result = alignWords(expected, actual);
+
+    const score = result.score;
+
+    $("scoreLabel").textContent = "WORD MATCH";
+
+    $("matchScore").textContent = score + "%";
+
+    $("matchScore").style.color =
+        score >= 85
+            ? "var(--green)"
+            : score >= 60
+                ? "var(--yellow)"
+                : "var(--red)";
+
+    $("comparison").replaceChildren();
+
+    result.aligned.forEach(item => {
+
+        const span = document.createElement("span");
+
+        span.className =
+            item.matched ? "matched" : "unmatched";
+
+        span.textContent = item.expected + " ";
+
+        $("comparison").appendChild(span);
+
+    });
+
+    const targetWords = result.aligned.filter(
+        item =>
+            item.expected.startsWith(lesson.cluster)
+    );
+
+    const matchedTargets = targetWords.filter(
+        item => item.matched
+    ).length;
+
+    $("targetFeedback").textContent =
+        "Target words recognized: " +
+        matchedTargets + "/" + targetWords.length;
+
+    if (snapshot.stage === 0) {
+
+        preScores[lesson.cluster] = score;
+
+    } else if (
+        snapshot.stage === 4 &&
+        snapshot.transferMode === "post"
+    ) {
+
+        postScores[lesson.cluster] = score;
+
+    } else if (snapshot.stage === 4) {
+
+        transferResults.push({
+
+            cluster: lesson.cluster,
+            mode: "guided",
+            score,
+            transcript: spoken
+
+        });
+
+    } else {
+
+        bestScores[lesson.cluster] = Math.max(
+
+            bestScores[lesson.cluster] ?? 0,
+
+            score
+
+        );
+
+    }
+
+    completed.add(
+        snapshot.stage + ":" + lesson.cluster
+    );
+
+    addReward(
+
+        snapshot.stage + ":" +
+        lesson.cluster + ":" +
+        snapshot.transferMode,
+
+        10 + Math.round(score / 10)
+
+    );
+
+    if (!test) {
+
+        applyAdaptiveFeedback(
+            result,
+            lesson,
+            snapshot
+        );
+
+    }
+
+    $("feedback").classList.remove("hidden");
+
+    renderSessionClusters();
+
+    updateDashboard();
+
+}
+
+function applyAdaptiveFeedback(
+    result,
+    lesson,
+    snapshot
+) {
+
+    const score = result.score;
+
+    const missed = result.aligned.filter(
+
+        item => !item.matched &&
+            item.expected.startsWith(lesson.cluster)
+
+    );
+
+    if (score < 60) {
+
+        $("adaptiveTitle").textContent =
+            "Level 1 · Remedial Practice";
+
+        $("adaptiveMessage").textContent =
+            "Slow down. Practice each target word, " +
+            "listen to the contrast pair, " +
+            "and then repeat the full sentence.";
+
+        rate = 0.7;
+
+        if (snapshot.stage === 2) {
+
+            $("minimalPairArea")
+                .classList.remove("hidden");
+
+            $("wordList")
+                .classList.remove("hidden");
+
+        }
+
+    } else if (score < 85) {
+
+        $("adaptiveTitle").textContent =
+            "Level 2 · Guided Practice";
+
+        $("adaptiveMessage").textContent =
+            "Good effort. Focus on the words that were " +
+            "not recognized and try the sentence again.";
+
+        rate = 0.85;
+
+        // The model playback uses the normal button at 1×
+        // if no exact button is available for 0.85×.
+
+        rate = 0.7;
+
+    } else {
+
+        $("adaptiveTitle").textContent =
+            "Level 3 · Advanced Practice";
+
+        $("adaptiveMessage").textContent =
+            "Strong word recognition. Now focus on natural " +
+            "sentence stress, rhythm and a new speaking context.";
+
+        rate = 1;
+
+    }
+
+    if (missed.length) {
+
+        $("correctiveMessage").textContent =
+            correctionFor(missed[0], lesson);
+
+        renderReviewWords(missed);
+
+    } else {
+
+        $("correctiveMessage").textContent =
+            "Check that the consonants connect smoothly. " +
+            "Use the model and your own recording to compare.";
+
+    }
+
+    updateSpeedButtons();
+
+}
+
+$("retryButton").onclick = () => {
+
+    if (recognizing || recording) return;
+
+    startRecognition();
+
+};
+
+// ============================================
+// 13. STRESS AND RHYTHM TRAINING
+// ============================================
+
+function renderRhythm() {
+
+    $("rhythmLine").replaceChildren();
+
+    currentLesson().rhythm.forEach(
+        ([syllable, stressed]) => {
+
+            const unit = document.createElement("div");
+
+            unit.className =
+                "rhythm-unit" +
+                (stressed ? " stressed" : "");
+
+            const beat = document.createElement("div");
+
+            beat.className =
+                "beat" +
+                (stressed ? " strong" : "");
+
+            const label = document.createElement("span");
+
+            label.textContent = syllable;
+
+            unit.appendChild(beat);
+            unit.appendChild(label);
+
+            $("rhythmLine").appendChild(unit);
+
+        }
+    );
+
+}
+
+function stopBeats() {
+
+    beatTimers.forEach(id => clearTimeout(id));
+
+    beatTimers = [];
+
+    document.querySelectorAll(".rhythm-unit")
+        .forEach(item => {
+
+            item.classList.remove("playing");
+
+        });
+
+    if (beatContext) {
+
+        beatContext.close().catch(() => {});
+
+        beatContext = null;
+
+    }
+
+}
+
+$("playBeat").onclick = async () => {
+
+    if (
+        recognizing ||
+        recording ||
+        requestingAudio
+    ) return;
+
+    stopAudio();
+
+    const AudioContextClass =
+        window.AudioContext ||
+        window.webkitAudioContext;
+
+    const units = [
+        ...document.querySelectorAll(".rhythm-unit")
+    ];
+
+    if (!AudioContextClass) {
+
+        units.forEach((unit, index) => {
+
+            beatTimers.push(setTimeout(() => {
+
+                units.forEach(item =>
+                    item.classList.remove("playing")
+                );
+
+                unit.classList.add("playing");
+
+            }, index * 450));
+
+        });
+
+        beatTimers.push(setTimeout(
+            stopBeats,
+            units.length * 450 + 100
+        ));
+
+        return;
+
+    }
+
+    const context = new AudioContextClass();
+
+    beatContext = context;
+
+    try {
+
+        await context.resume();
+
+    } catch (error) {
+
+        stopBeats();
+
+        return;
+
+    }
+
+    if (
+        beatContext !== context ||
+        !running ||
+        stage !== 3
+    ) return;
+
+    const rhythm = currentLesson().rhythm;
+
+    let offset = 0;
+
+    rhythm.forEach(([syllable, stressed], index) => {
+
+        const delay = offset;
+
+        const oscillator =
+            context.createOscillator();
+
+        const gain = context.createGain();
+
+        oscillator.frequency.value =
+            stressed ? 700 : 400;
+
+        oscillator.type = "sine";
+
+        const start =
+            context.currentTime + 0.1 + delay;
+
+        gain.gain.setValueAtTime(
+            stressed ? 0.18 : 0.06,
+            start
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+            0.001,
+            start + 0.1
+        );
+
+        oscillator.connect(gain);
+        gain.connect(context.destination);
+
+        oscillator.start(start);
+        oscillator.stop(start + 0.12);
+
+        beatTimers.push(setTimeout(() => {
+
+            units.forEach(unit =>
+                unit.classList.remove("playing")
+            );
+
+            units[index]?.classList.add("playing");
+
+        }, 100 + delay * 1000));
+
+        offset += stressed ? 0.52 : 0.25;
+
+    });
+
+    beatTimers.push(setTimeout(
+
+        stopBeats,
+
+        250 + offset * 1000
+
+    ));
+
+    addReward(
+        "rhythm:" + currentLesson().cluster,
+        5
+    );
+
+};
+
+// ============================================
+// 14. FREE SPEAKING ASSESSMENT
+// ============================================
+
+function evaluateFreeSpeech(spoken, lesson) {
+
+    const tokens = tokenize(spoken);
+
+    const used = lesson.keywords.filter(word =>
+
+        tokens.includes(word.toLowerCase())
+
+    );
+
+    const uniqueUsed = [...new Set(used)];
+
+    const totalWords = tokens.length;
+
+    $("scoreLabel").textContent =
+        "TARGET KEYWORDS RECOGNIZED";
+
+    $("matchScore").textContent =
+        uniqueUsed.length + "/" +
+        lesson.keywords.length;
+
+    $("matchScore").style.color = "var(--purple)";
+
+    $("targetFeedback").textContent =
+        "Recognized words: " + totalWords +
+        ". Target keywords: " +
+        (uniqueUsed.join(", ") || "None recognized");
+
+    $("adaptiveTitle").textContent =
+        uniqueUsed.length >= 2
+            ? "Transfer Goal Reached"
+            : "Keep Building Your Response";
+
+    $("adaptiveMessage").textContent =
+        uniqueUsed.length >= 2
+            ? "At least two target keywords were recognized."
+            : "Try to include two different target keywords " +
+                "in your own sentence.";
+
+    $("correctiveMessage").textContent =
+        "Check the clarity and natural rhythm of your " +
+        "response by listening to your recording. " +
+        "Keyword recognition does not measure comprehensibility.";
+
+    transferResults.push({
+
+        cluster: lesson.cluster,
+        mode: "free",
+        words: totalWords,
+        keywords: uniqueUsed,
+        transcript: spoken
+
+    });
+
+    completed.add(
+        stage + ":" + lesson.cluster
+    );
+
+    addReward(
+        "free:" + lesson.cluster,
+        uniqueUsed.length >= 2 ? 20 : 10
+    );
+
+    $("feedback").classList.remove("hidden");
+
+    renderSessionClusters();
+
+}
+
+// ============================================
+// 15. RECORD AND COMPARE
+// ============================================
+
+async function startRecording() {
+
+    if (
+        recognizing ||
+        recording ||
+        requestingAudio ||
+        !running
+    ) return;
+
+    if (
+        !navigator.mediaDevices?.getUserMedia ||
+        !window.MediaRecorder
+    ) {
+
+        $("recordStatus").textContent =
+            "Voice recording is unsupported. " +
+            "Try Chrome, HTTPS or localhost.";
+
+        return;
+
+    }
+
+    stopAudio();
+
+    const token = ++recordingToken;
+
+    const label =
+        currentLesson().cluster + " · " +
+        stages[stage].title;
+
+    requestingAudio = true;
+
+    $("recordStatus").textContent =
+        "Requesting microphone access...";
+
+    $("recordButton").disabled = true;
+
+    try {
+
+        const stream =
+            await navigator.mediaDevices.getUserMedia({
+
+                audio: true
+
+            });
+
+        if (
+            token !== recordingToken ||
+            !running
+        ) {
+
+            stream.getTracks()
+                .forEach(track => track.stop());
+
+            return;
+
+        }
+
+        mediaStream = stream;
+
+        recorder = new MediaRecorder(stream);
+
+        const instance = recorder;
+
+        const chunks = [];
+
+        recordingChunks = chunks;
+
+        let discard = false;
+
+        instance.discardRecording = () => {
+
+            discard = true;
+
+        };
+
+        instance.ondataavailable = event => {
+
+            if (event.data.size > 0) {
+
+                chunks.push(event.data);
+
+            }
+
+        };
+
+        instance.onstop = () => {
+
+            stream.getTracks()
+                .forEach(track => track.stop());
+
+            if (mediaStream === stream) {
+
+                mediaStream = null;
+
+            }
+
+            if (recorder === instance) {
+
+                recorder = null;
+                recording = false;
+
+                updateRecordingUI(false);
+
+            }
+
+            if (
+                discard ||
+                token !== recordingToken ||
+                !chunks.length
+            ) return;
+
+            clearRecording();
+
+            recordingBlob = new Blob(
+
+                chunks,
+
+                {
+                    type: instance.mimeType ||
+                        chunks[0].type ||
+                        "audio/webm"
+                }
+
+            );
+
+            recordingURL =
+                URL.createObjectURL(recordingBlob);
+
+            recordingLabel = label;
+
+            $("myAudio").src = recordingURL;
+
+            $("myAudio").classList.remove("hidden");
+
+            $("downloadAudio")
+                .classList.remove("hidden");
+
+            $("recordStatus").textContent =
+                "Recording saved for playback. " +
+                "Listen and compare with the model.";
+
+            addReward(
+                "record:" + label,
+                5
+            );
+
+        };
+
+        instance.onerror = () => {
+
+            stopRecording(true);
+
+            $("recordStatus").textContent =
+                "Recording failed. Please try again.";
+
+        };
+
+        instance.start();
+
+        recording = true;
+
+        updateRecordingUI(true);
+
+    } catch (error) {
+
+        if (token === recordingToken) {
+
+            if (mediaStream) {
+
+                mediaStream.getTracks()
+                    .forEach(track => track.stop());
+
+                mediaStream = null;
+
+            }
+
+            recording = false;
+
+            updateRecordingUI(false);
+
+            $("recordStatus").textContent =
+                "Microphone unavailable or permission denied.";
+
+        }
+
+    } finally {
+
+        if (token === recordingToken) {
+
+            requestingAudio = false;
+
+            $("recordButton").disabled = recognizing;
+
+        }
+
+    }
+
+}
+
+function updateRecordingUI(active) {
+
+    $("recordButton").textContent =
+        active
+            ? "⏹ Stop Recording"
+            : "🔴 Record My Voice";
+
+    $("micButton").disabled = active;
+
+    $("listenButton").disabled = active;
+
+    if (active) {
+
+        $("recordStatus").textContent =
+            "Recording... Read or speak, then tap stop.";
+
+    }
+
+}
+
+function stopRecording(discard = false) {
+
+    if (discard) {
+
+        recordingToken++;
+
+        requestingAudio = false;
+
+    }
+
+    if (recorder) {
+
+        if (discard && recorder.discardRecording) {
+
+            recorder.discardRecording();
+
+        }
+
+        if (recorder.state !== "inactive") {
+
+            try {
+
+                recorder.stop();
+
+            } catch (error) {}
+
+        }
+
+    }
+
+    if (mediaStream) {
+
+        mediaStream.getTracks()
+            .forEach(track => track.stop());
+
+        mediaStream = null;
+
+    }
+
+    if (discard) {
+
+        recorder = null;
+
+        recording = false;
+
+        $("recordButton").disabled = false;
+
+        updateRecordingUI(false);
+
+        $("recordStatus").textContent =
+            recordingURL
+                ? "Previous recording available for playback."
+                : "Record your voice to compare with the model.";
+
+    }
+
+}
+
+function clearRecording() {
+
+    $("myAudio").pause();
+    $("finalAudio").pause();
+
+    $("myAudio").removeAttribute("src");
+    $("finalAudio").removeAttribute("src");
+
+    $("myAudio").load();
+    $("finalAudio").load();
+
+    if (recordingURL) {
+
+        URL.revokeObjectURL(recordingURL);
+
+    }
+
+    recordingURL = null;
+    recordingBlob = null;
+    recordingLabel = "";
+
+    $("myAudio").classList.add("hidden");
+
+    $("downloadAudio").classList.add("hidden");
+
+    $("finalAudioArea").classList.add("hidden");
+
+}
+
+$("recordButton").onclick = () => {
+
+    if (recording) {
+
+        stopRecording(false);
+
+    } else {
+
+        startRecording();
+
+    }
+
+};
+
+function downloadRecording() {
+
+    if (!recordingBlob || !recordingURL) return;
+
+    const type = recordingBlob.type;
+
+    let extension = "webm";
+
+    if (type.includes("mp4")) {
+
+        extension = "m4a";
+
+    } else if (type.includes("ogg")) {
+
+        extension = "ogg";
+
+    } else if (type.includes("wav")) {
+
+        extension = "wav";
+
+    }
+
+    const link = document.createElement("a");
+
+    link.href = recordingURL;
+
+    link.download =
+        "my_pronunciation." + extension;
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    link.remove();
+
+}
+
+$("downloadAudio").onclick = downloadRecording;
+
+$("finalDownload").onclick = downloadRecording;
+
+// ============================================
+// 16. MANUAL PRACTICE
+// ============================================
+
+$("manualButton").onclick = () => {
+
+    cancelRecognition();
+
+    stopRecording(true);
+
+    $("manualArea").classList.toggle("hidden");
+
+};
+
+$("saveManual").onclick = () => {
+
+    if (!$("manual1").checked) {
+
+        alert("Complete the speaking task first.");
+
+        return;
+
+    }
+
+    const lesson = currentLesson();
+
+    const key =
+        stage === 4 && transferMode === "post"
+            ? "post:" + lesson.cluster
+            : stage + ":" + lesson.cluster;
+
+    manualPractice[key] = {
+
+        completed: true,
+
+        consonantConnection: $("manual2").checked,
+
+        rhythm: $("manual3").checked
+
+    };
+
+    completed.add(stage + ":" + lesson.cluster);
+
+    addReward(
+        stage + ":" +
+        lesson.cluster + ":" +
+        transferMode,
+        10
+    );
+
+    if (
+        stage === 4 &&
+        transferMode !== "post"
+    ) {
+
+        transferResults.push({
+
+            cluster: lesson.cluster,
+
+            mode: "self-assessed " + transferMode,
+
+            completed: true
+
+        });
+
+    }
+
+    $("manualArea").classList.add("hidden");
+
+    $("micStatus").textContent =
+        "✓ Self-assessed practice saved. " +
+        "No automatic word score was generated.";
+
+    renderSessionClusters();
+
+};
+
+// ============================================
+// 17. REFLECTION
+// ============================================
+
+function openReflection() {
+
+    cancelRecognition();
+
+    stopAudio();
+
+    stopRecording(true);
+
+    stage = 5;
+
+    updateDashboard();
+
+    showScreen("reflectionScreen");
+
+}
+
+$("finishEarly").onclick = openReflection;
+
+$("showReport").onclick = finishSession;
+
+// ============================================
+// 18. FINAL REPORT
+// ============================================
+
+function average(values) {
+
+    if (!values.length) return null;
+
+    return Math.round(
+
+        values.reduce((a, b) => a + b, 0) /
+        values.length
+
+    );
+
+}
+
+function finishSession() {
+
+    if (reportSaved) return;
+
+    running = false;
+
+    clearInterval(timerID);
+
+    cancelRecognition();
+
+    stopAudio();
+
+    stopRecording(true);
+
+    stage = 5;
+
+    reportSaved = true;
+
+    const preAverage =
+        average(Object.values(preScores));
+
+    const postAverage =
+        average(Object.values(postScores));
+
+    const matchedClusters =
+        sessionClusters.filter(cluster =>
+
+            typeof preScores[cluster] === "number" &&
+            typeof postScores[cluster] === "number"
+
+        );
+
+    const changes = matchedClusters.map(cluster =>
+
+        postScores[cluster] - preScores[cluster]
+
+    );
+
+    const gain = average(changes);
+
+    const confidence =
+        $("confidence").value
+            ? Number($("confidence").value)
+            : null;
+
+    const selfChecks = [
+        ...document.querySelectorAll(".reflection")
+    ].filter(item => item.checked).length;
+
+    lastReport = {
+
+        date: new Date().toLocaleDateString(),
+
+        clusters: [...sessionClusters],
+
+        xp,
+        attempts,
+
+        preScores: {...preScores},
+        postScores: {...postScores},
+        bestScores: {...bestScores},
+
+        matchedChange: gain,
+
+        matchedClusters,
+
+        confidence,
+
+        selfAssessment: selfChecks,
+
+        transferResults: [...transferResults],
+
+        manualPractice: {...manualPractice}
+
+    };
+
+    $("finalXP").textContent = xp;
+
+    $("finalAttempts").textContent = attempts;
+
+    $("finalPre").textContent =
+        formatScore(preAverage);
+
+    $("finalPost").textContent =
+        formatScore(postAverage);
+
+    $("finalGain").textContent =
+        gain === null
+            ? "—"
+            : (gain > 0 ? "+" : "") +
+                gain + " pp";
+
+    $("finalConfidence").textContent =
+        confidence === null
+            ? "—"
+            : confidence + "/5";
+
+    $("reportMessage").textContent =
+        matchedClusters.length
+            ? "Pre/post comparison available for " +
+                matchedClusters.length +
+                " matched cluster(s). Keep focusing on clarity."
+            : "Practice completed. Continue with both pre- " +
+                "and post-tests next time for a comparison.";
+
+    renderResultTable();
+
+    renderRecommendation();
+
+    renderTransferReport();
+
+    $("selfReport").textContent =
+        selfChecks + "/4 reflection items selected. " +
+        "These results are self-reported, not automatic " +
+        "pronunciation scores.";
+
+    if (recordingURL) {
+
+        $("finalAudio").src = recordingURL;
+
+        $("finalAudioLabel").textContent =
+            recordingLabel;
+
+        $("finalAudioArea").classList.remove("hidden");
+
+    } else {
+
+        $("finalAudioArea").classList.add("hidden");
+
+    }
+
+    persistSession();
+
+    $("progressFill").style.width = "100%";
+
+    updateDashboard();
+
+    $("progressFill").style.width = "100%";
+
+    showScreen("reportScreen");
+
+}
+
+function renderResultTable() {
+
+    $("resultTable").replaceChildren();
+
+    sessionClusters.forEach(cluster => {
+
+        const pre = preScores[cluster];
+        const post = postScores[cluster];
+
+        const change =
+            typeof pre === "number" &&
+            typeof post === "number"
+                ? post - pre
+                : null;
+
+        const tr = document.createElement("tr");
+
+        const values = [
+
+            cluster,
+
+            formatScore(pre),
+
+            formatScore(post),
+
+            change === null
+                ? "—"
+                : (change > 0 ? "+" : "") +
+                    change + " pp",
+
+            formatScore(bestScores[cluster])
+
+        ];
+
+        values.forEach((value, index) => {
+
+            const td = document.createElement("td");
+
+            td.textContent = value;
+
+            if (index === 3 && change !== null) {
+
+                td.className =
+                    change > 0
+                        ? "positive"
+                        : change < 0
+                            ? "negative"
+                            : "";
+
+            }
+
+            tr.appendChild(td);
+
+        });
+
+        $("resultTable").appendChild(tr);
+
+    });
+
+}
+
+function renderRecommendation() {
+
+    const review = sessionClusters.filter(cluster => {
+
+        const score =
+            postScores[cluster] ??
+            bestScores[cluster] ??
+            preScores[cluster];
+
+        return typeof score === "number" &&
+            score < 85;
+
+    });
+
+    const unmeasured = sessionClusters.filter(cluster =>
+
+        typeof postScores[cluster] !== "number"
+
+    );
+
+    let message;
+
+    if (review.length) {
+
+        message =
+            "Review " + review.join(", ") +
+            " using slow model playback, contrast pairs " +
+            "and repeated sentence practice.";
+
+    } else if (unmeasured.length) {
+
+        message =
+            "Complete a post-test for " +
+            unmeasured.join(", ") +
+            " next time to obtain comparable word-match data.";
+
+    } else {
+
+        message =
+            "Try new sentences and free speaking tasks. " +
+            "Ask your teacher to check your pronunciation, " +
+            "stress and rhythm.";
+
+    }
+
+    $("nextRecommendation").textContent = message;
+
+}
+
+function renderTransferReport() {
+
+    const freeResults = transferResults.filter(
+        item => item.mode === "free"
+    );
+
+    const guidedResults = transferResults.filter(
+        item => item.mode === "guided"
+    );
+
+    const manualResults = transferResults.filter(
+        item => item.mode.startsWith("self-assessed")
+    );
+
+    const text = [];
+
+    if (guidedResults.length) {
+
+        const latest =
+            guidedResults[guidedResults.length - 1];
+
+        text.push(
+
+            "Latest new-sentence word match: " +
+            latest.score + "%."
+
+        );
+
+    }
+
+    if (freeResults.length) {
+
+        const latest =
+            freeResults[freeResults.length - 1];
+
+        text.push(
+
+            "Latest free speaking: " +
+            latest.words + " recognized words; " +
+            latest.keywords.length +
+            " different target keywords."
+
+        );
+
+    }
+
+    if (manualResults.length) {
+
+        text.push(
+
+            manualResults.length +
+            " self-assessed transfer task(s)."
+
+        );
+
+    }
+
+    $("transferReport").textContent =
+        text.length
+            ? text.join(" ")
+            : "No transfer task result was recorded.";
+
+}
+
+// ============================================
+// 19. CUMULATIVE LEARNING HISTORY
+// ============================================
+
+function persistSession() {
+
+    const history = loadHistory();
+
+    history.sessions.push({
+
+        date: lastReport.date,
+
+        clusters: lastReport.clusters,
+
+        xp,
+
+        attempts,
+
+        matchedChange: lastReport.matchedChange
+
+    });
+
+    history.sessions =
+        history.sessions.slice(-100);
+
+    sessionClusters.forEach(cluster => {
+
+        const didPractice =
+            heard.has(cluster) ||
+            [...completed].some(
+                key => key.endsWith(":" + cluster)
+            );
+
+        if (!didPractice) return;
+
+        const old = history.clusters[cluster] || {
+
+            sessions: 0,
+
+            latestScore: null
+
+        };
+
+        const newScore =
+            postScores[cluster] ??
+            bestScores[cluster] ??
+            preScores[cluster];
+
+        history.clusters[cluster] = {
+
+            sessions: old.sessions + 1,
+
+            latestScore:
+                typeof newScore === "number"
+                    ? newScore
+                    : old.latestScore,
+
+            lastPracticed:
+                new Date().toISOString()
+
+        };
+
+    });
+
+    const saved = saveHistory(history);
+
+    if (!saved) {
+
+        $("reportMessage").textContent +=
+            " Browser storage is unavailable; " +
+            "download your report to retain the results.";
+
+    }
+
+}
+
+// ============================================
+// 20. EXPORT LEARNING REPORT
+// ============================================
+
+$("exportReport").onclick = () => {
+
+    if (!lastReport) return;
+
+    const lines = [
+
+        "Adaptive Tongue Twister V2",
+
+        "Date: " + lastReport.date,
+
+        "Clusters: " +
+            lastReport.clusters.join(", "),
+
+        "XP: " + lastReport.xp,
+
+        "Recognized speaking attempts: " +
+            lastReport.attempts,
+
+        "",
+
+        "CLUSTER RESULTS",
+
+        ...lastReport.clusters.map(cluster =>
+
+            cluster +
+
+            " | Pre: " +
+                formatScore(
+                    lastReport.preScores[cluster]
+                ) +
+
+            " | Post: " +
+                formatScore(
+                    lastReport.postScores[cluster]
+                ) +
+
+            " | Practice best: " +
+                formatScore(
+                    lastReport.bestScores[cluster]
+                )
+
+        ),
+
+        "",
+
+        "Matched-cluster change: " +
+
+        (
+            lastReport.matchedChange === null
+
+                ? "Not available"
+
+                : lastReport.matchedChange +
+                    " percentage points"
+        ),
+
+        "Confidence: " +
+
+        (
+            lastReport.confidence === null
+
+                ? "Not answered"
+
+                : lastReport.confidence + "/5"
+        ),
+
+        "Reflection items: " +
+            lastReport.selfAssessment + "/4",
+
+        "",
+
+        "TRANSFER RESULTS",
+
+        JSON.stringify(
+            lastReport.transferResults,
+            null,
+            2
+        ),
+
+        "",
+
+        "SELF-ASSESSED PRACTICE",
+
+        JSON.stringify(
+            lastReport.manualPractice,
+            null,
+            2
+        ),
+
+        "",
+
+        "NOTE:",
+
+        "Word Match is based on speech recognition " +
+        "and is not a validated phoneme-level score.",
+
+        "Research reference: Lee, Jang & Plonsky (2015)."
+
+    ];
+
+    const blob = new Blob(
+
+        [lines.join("\n")],
+
+        {type: "text/plain;charset=utf-8"}
+
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+
+    link.href = url;
+
+    link.download = "pronunciation_report.txt";
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    link.remove();
+
+    setTimeout(
+        () => URL.revokeObjectURL(url),
+        1000
+    );
+
+};
+
+// ============================================
+// 21. RESTART AND CLEANUP
+// ============================================
+
+$("restartButton").onclick = () => {
+
+    cancelRecognition();
+
+    stopAudio();
+
+    stopRecording(true);
+
+    clearRecording();
+
+    clearInterval(timerID);
+
+    running = false;
+
+    reportSaved = false;
+
+    stage = 0;
+
+    xp = 0;
+    seconds = 300;
+
+    $("timer").textContent = "05:00";
+
+    $("timer").style.color = "var(--yellow)";
+
+    $("xp").textContent = "0";
+
+    $("stageCount").textContent = "0/6";
+
+    $("progressFill").style.width = "0%";
+
+    renderStartClusters();
+
+    showScreen("startScreen");
+
+};
+
+window.addEventListener("pagehide", () => {
+
+    cancelRecognition();
+
+    stopAudio();
+
+    stopRecording(true);
+
+    clearInterval(timerID);
+
+});
+
+// INITIALIZE APPLICATION
+
+renderStartClusters();
+
+updateDashboard();
+
+</script>
+
+</body>
+</html>
